@@ -11,6 +11,12 @@ class TimeStampedModel(models.Model):
 
 
 class Ticket(TimeStampedModel):
+    class Types(models.IntegerChoices):
+        ACAO = 0, _("Ação")
+        FII = 1, _("FII")
+        BDR = 2, _("BDR")
+        ETF = 3, _("ETF")
+
     name = models.CharField(
         _("Name"),
         max_length=10,
@@ -19,6 +25,10 @@ class Ticket(TimeStampedModel):
         _("Value"),
         max_digits=15,
         decimal_places=2,
+    )
+    type = models.PositiveSmallIntegerField(
+        _("Type"),
+        choices=Types.choices,
     )
 
     def __str__(self):

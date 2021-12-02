@@ -5,7 +5,8 @@ from core.models import StockAsset, Ticket
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ["name", "price", "updated_at"]
+    list_display = ["name", "price", "type", "updated_at"]
+    list_filter = ["type"]
     search_fields = ["name"]
 
 
