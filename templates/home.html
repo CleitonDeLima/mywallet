@@ -11,7 +11,7 @@
 <body>
 
   <div class="container-md my-5"
-    hx-get="{% url 'core:to-buy' %}"
+    hx-get="{% url 'core:stock-asset-to-buy' %}"
     hx-trigger="load, every 120s" hx-target="#results">
     <div class="card">
       <div class="card-body" id="results"></div>

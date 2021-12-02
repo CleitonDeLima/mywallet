@@ -1,3 +1,14 @@
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
+DJANGO_SETTINGS_MODULE = "mywallet.settings_test"
+python_files = [
+    "tests.py",
+    "test_*.py",
+]
+
 [tool.black]
 line-length = 80
 exclude = '''
