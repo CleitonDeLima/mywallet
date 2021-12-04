@@ -1,8 +1,18 @@
 <div class="position-sticky pt-3">
-  <ul class="nav flex-column">
+  <ul class="nav flex-column"
+    hx-target="#content"
+    hx-push-url="true">
+
     <li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="{% url 'core:home' %}">
+      <a class="nav-link" aria-current="page" href="#"
+        hx-get="{% url 'core:home' %}">
         Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" aria-current="page" href="#"
+        hx-get="{% url 'core:wallet-list' %}">
+        Carteiras
       </a>
     </li>
   </ul>

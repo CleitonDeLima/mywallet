@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ticket',
             name='type',
-            field=models.PositiveSmallIntegerField(choices=[(0, 'Ação'), (1, 'FII'), (2, 'BDR'), (3, 'ETF')], default=0, verbose_name='Type'),
+            field=models.PositiveSmallIntegerField(choices=[(0, 'Ação'), (1, 'FII'), (2, 'BDR'), (3, 'ETF')], default=0, verbose_name='Tipo'),
             preserve_default=False,
         ),
     ]

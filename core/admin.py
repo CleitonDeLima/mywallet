@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import StockAsset, Ticket
+from core.models import StockAsset, Ticket, Wallet
 
 
 @admin.register(Ticket)
@@ -14,3 +14,9 @@ class TicketAdmin(admin.ModelAdmin):
 class StockAssetAdmin(admin.ModelAdmin):
     list_display = ["ticket", "quantity", "expected_allocation"]
     autocomplete_fields = ["ticket"]
+    list_filter = ["wallet"]
+
+
+@admin.register(Wallet)
+class WalletAdmin(admin.ModelAdmin):
+    ...

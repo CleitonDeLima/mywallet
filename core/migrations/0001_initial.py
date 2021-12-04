@@ -17,9 +17,9 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=10, verbose_name='Name')),
-                ('quantity', models.PositiveIntegerField(verbose_name='Quantity')),
-                ('expected_allocation', models.DecimalField(decimal_places=2, max_digits=5, verbose_name='Expected Allocation')),
+                ('name', models.CharField(max_length=10, verbose_name='Nome')),
+                ('quantity', models.PositiveIntegerField(verbose_name='Quantidade')),
+                ('expected_allocation', models.DecimalField(decimal_places=2, max_digits=5, verbose_name='Alocação Esperada')),
             ],
             options={
                 'verbose_name': 'Ativo',

@@ -1,0 +1,35 @@
+{% extends base_template %}
+
+{% block head_title %}Carteiras{% endblock %}
+
+{% block title %}Carteiras{% endblock %}
+
+{% block content %}
+  <a class="btn btn-primary" href="#"
+    hx-get="{% url 'core:wallet-create' %}"
+    hx-target="#content"
+    hx-push-url="true">
+    Crie uma nova carteira
+  </a>
+
+  {% for wallet in wallet_list %}
+    <div class="card mt-2">
+      <div class="card-body">
+        <h5 class="card-title">{{ wallet.name }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Criado em {{ wallet.created_at|date:"d M Y" }}</h6>
+        <a class="card-link" href="#"
+          hx-get="{% url 'core:asset-list' wallet_id=wallet.id %}"
+          hx-target="#content"
+          hx-push-url="true">
+          Ver Ativos
+        </a>
+        <a class="card-link" href="#"
+          hx-get="{% url 'core:rebalancing' wallet_id=wallet.id %}"
+          hx-target="#content"
+          hx-push-url="true">
+          Rebalanceamento
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}

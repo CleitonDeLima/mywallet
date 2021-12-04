@@ -1,0 +1,28 @@
+{% extends base_template %}
+
+{% block head_title %}Ativos{% endblock %}
+
+{% block title %}Ativos{% endblock %}
+
+{% block content %}
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Ativo</th>
+          <th class="text-center">Qtd.</th>
+          <th class="text-end">Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for asset in asset_list %}
+          <tr>
+            <th scope="row">{{ asset.ticket.name }}</th>
+            <td class="text-center">{{ asset.quantity }}</td>
+            <td class="text-end">R$ {{ asset.ticket.price }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

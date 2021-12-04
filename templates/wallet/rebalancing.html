@@ -1,0 +1,51 @@
+{% extends base_template %}
+
+{% block head_title %}Rebalanceamento da Carteira{% endblock %}
+
+{% block title %}Rebalanceamento da Carteira{% endblock %}
+
+{% block content %}
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Ativo</th>
+          <th class="text-center">Qtd.</th>
+          <th class="text-end">Valor</th>
+          <th class="text-end">Total</th>
+          <th class="text-end">Carteira (%)</th>
+          <th class="text-end">Meta (%)</th>
+          <th class="text-center">Qtd para Comprar</th>
+          <th class="text-end">Valor para Aporte</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for asset in asset_list %}
+          <tr>
+            <th>{{ asset.ticket.name }}</th>
+            <td class="text-center">{{ asset.quantity }}</td>
+            <td class="text-end">R$ {{ asset.ticket.price }}</td>
+            <td class="text-end">R$ {{ asset.total_price|floatformat:2 }}</td>
+            <td class="text-end {% if asset.allocated < asset.expected_allocation %}table-danger{% else %}table-success{% endif %}">
+              {{ asset.allocated|floatformat:2 }} %
+            </td>
+            <td class="text-end">{{ asset.expected_allocation }} %</td>
+            <td class="text-center">{{ asset.quantity_to_buy }}</td>
+            <td class="text-end">R$ {{ asset.value_to_buy|floatformat:2 }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="8">Nenhum ativo cadastrado.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr class="table-dark">
+          <th>Total</th>
+          <td colspan="7">R$ {{ total|floatformat:2 }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+{% endblock %}
+

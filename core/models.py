@@ -18,18 +18,33 @@ class Ticket(TimeStampedModel):
         ETF = 3, _("ETF")
 
     name = models.CharField(
-        _("Name"),
+        _("Nome"),
         max_length=10,
     )
     price = models.DecimalField(
-        _("Value"),
+        _("Valor"),
         max_digits=15,
         decimal_places=2,
     )
     type = models.PositiveSmallIntegerField(
-        _("Type"),
+        _("Tipo"),
         choices=Types.choices,
     )
+
+    class Meta:
+        verbose_name = _("Papel")
+        verbose_name_plural = _("Papeis")
+
+    def __str__(self):
+        return self.name
+
+
+class Wallet(TimeStampedModel):
+    name = models.CharField(_("Nome"), max_length=30)
+
+    class Meta:
+        verbose_name = _("Carteira")
+        verbose_name_plural = _("Carteiras")
 
     def __str__(self):
         return self.name
@@ -37,15 +52,20 @@ class Ticket(TimeStampedModel):
 
 class StockAsset(TimeStampedModel):
     ticket = models.ForeignKey(
-        Ticket,
-        verbose_name=_("Ticket"),
+        "core.Ticket",
+        verbose_name=_("Papel"),
         on_delete=models.PROTECT,
     )
-    quantity = models.PositiveIntegerField(
-        _("Quantity"),
+    wallet = models.ForeignKey(
+        "core.Wallet",
+        verbose_name=_("Carteira"),
+        on_delete=models.SET_NULL,
+        related_name="assets",
+        null=True,
     )
+    quantity = models.PositiveIntegerField(_("Quantidade"))
     expected_allocation = models.DecimalField(
-        _("Expected Allocation"),
+        _("Alocação Esperada"),
         max_digits=5,
         decimal_places=2,
     )
@@ -55,4 +75,4 @@ class StockAsset(TimeStampedModel):
         verbose_name_plural = _("Ativos")
 
     def __str__(self):
-        return str(self.ticket)
+        return f"{self.quantity} {self.ticket}"
