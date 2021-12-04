@@ -2,5 +2,6 @@ asgiref==3.4.1
 Django==4.0rc1
 django-debug-toolbar==3.2.2
 django-extensions==3.1.5
+django-htmx==1.6.0
 pandas-datareader==0.10.0
 pytz==2021.3
