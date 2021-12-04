@@ -5,13 +5,15 @@
 
     <li class="nav-item">
       <a class="nav-link" aria-current="page" href="#"
-        hx-get="{% url 'core:home' %}">
+        hx-get="{% url 'core:home' %}"
+        _="on click take .active">
         Dashboard
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" aria-current="page" href="#"
-        hx-get="{% url 'core:wallet-list' %}">
+        hx-get="{% url 'core:wallet-list' %}"
+        _="on click take .active">
         Carteiras
       </a>
     </li>
