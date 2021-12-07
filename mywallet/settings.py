@@ -39,9 +39,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "django_extensions",
     "debug_toolbar",
     "django_htmx",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
     "core",
 ]
 
@@ -55,6 +59,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "login_required.middleware.LoginRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "mywallet.urls"
@@ -154,4 +159,30 @@ LOGGING = {
 
 INTERNAL_IPS = [
     "127.0.0.1",
+]
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = "/"
+
+# django-allauth config
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_PRESERVE_USERNAME_CASING = False
+ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
+
+
+# django-login-required-middleware config
+LOGIN_REQUIRED_IGNORE_VIEW_NAMES = [
+    "account_login",
+    "account_logout",
+    "account_signup",
 ]
