@@ -1,8 +1,13 @@
-{% extends base_template %}
+{% extends '__base.html' %}
+{% load core_tags %}
 
 {% block head_title %}Ativos{% endblock %}
 
 {% block title %}Ativos{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb Dashboard="core:home" Carteiras="core:wallet-list" Ativos="core:asset-list" %}
+{% endblock %}
 
 {% block content %}
   <div class="table-responsive">
@@ -19,7 +24,7 @@
           <tr>
             <th scope="row">{{ asset.ticket.name }}</th>
             <td class="text-center">{{ asset.quantity }}</td>
-            <td class="text-end">R$ {{ asset.ticket.price }}</td>
+            <td class="text-end">{{ asset.ticket.price|show_money }}</td>
           </tr>
         {% endfor %}
       </tbody>

@@ -1,8 +1,13 @@
-{% extends base_template %}
+{% extends '__base.html' %}
+{% load core_tags %}
 
 {% block head_title %}Nova Carteira{% endblock %}
 
 {% block title %}Nova Carteira{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb Dashboard="core:home" Carteiras="core:wallet-list" Nova="core:wallet-create" %}
+{% endblock %}
 
 {% block content %}
   <p>novo</p>

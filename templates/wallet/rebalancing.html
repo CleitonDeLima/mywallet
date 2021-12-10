@@ -1,8 +1,13 @@
-{% extends base_template %}
+{% extends '__base.html' %}
+{% load core_tags %}
 
 {% block head_title %}Rebalanceamento da Carteira{% endblock %}
 
 {% block title %}Rebalanceamento da Carteira{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb Dashboard="core:home" Carteiras="core:wallet-list" Rebalanceamento="core:rebalancing" %}
+{% endblock %}
 
 {% block content %}
   <div class="table-responsive">
@@ -24,14 +29,14 @@
           <tr>
             <th>{{ asset.ticket.name }}</th>
             <td class="text-center">{{ asset.quantity }}</td>
-            <td class="text-end">R$ {{ asset.ticket.price }}</td>
-            <td class="text-end">R$ {{ asset.total_price|floatformat:2 }}</td>
+            <td class="text-end">{{ asset.ticket.price|show_money }}</td>
+            <td class="text-end">{{ asset.total_price|floatformat:2|show_money }}</td>
             <td class="text-end {% if asset.allocated < asset.expected_allocation %}table-danger{% else %}table-success{% endif %}">
               {{ asset.allocated|floatformat:2 }} %
             </td>
             <td class="text-end">{{ asset.expected_allocation }} %</td>
             <td class="text-center">{{ asset.quantity_to_buy }}</td>
-            <td class="text-end">R$ {{ asset.value_to_buy|floatformat:2 }}</td>
+            <td class="text-end">{{ asset.value_to_buy|floatformat:2|show_money }}</td>
           </tr>
         {% empty %}
           <tr>
