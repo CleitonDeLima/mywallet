@@ -6,7 +6,8 @@
 {% block title %}Carteiras{% endblock %}
 
 {% block breadcrumb %}
-  {% breadcrumb Dashboard="core:home" Carteiras="core:wallet-list" %}
+  {% breadcrumb_url "Home" "core:home" %}
+  {% breadcrumb_url "Carteiras" %}
 {% endblock %}
 
 {% block content %}
@@ -19,11 +20,14 @@
       <div class="card-body">
         <h5 class="card-title">{{ wallet.name }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">Criado em {{ wallet.created_at|date:"d M Y" }}</h6>
-        <a class="card-link" href="{% url 'core:asset-list' wallet_id=wallet.id %}">
+        <a class="card-link" href="#">
           Ver Ativos
         </a>
-        <a class="card-link" href="{% url 'core:rebalancing' wallet_id=wallet.id %}">
+        <a class="card-link" href="#">
           Rebalanceamento
+        </a>
+        <a class="card-link" href="{% url 'core:wallet-update' wallet.id %}">
+          Editar
         </a>
       </div>
     </div>

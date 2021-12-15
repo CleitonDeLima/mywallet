@@ -1,8 +1,13 @@
-{% extends base_template %}
+{% extends '__base.html' %}
+{% load core_tags %}
 
-{% block head_title %}Dashboard{% endblock %}
+{% block head_title %}Home{% endblock %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Home{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb_url "Home" %}
+{% endblock %}
 
 {% block content %}
   <h2>Home</h2>

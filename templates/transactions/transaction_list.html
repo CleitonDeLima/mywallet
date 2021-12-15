@@ -1,0 +1,92 @@
+{% extends '__base.html' %}
+{% load core_tags %}
+
+{% block head_title %}Transações{% endblock %}
+
+{% block title %}Transações{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb_url "Home" "core:home" %}
+  {% breadcrumb_url "Transações" %}
+{% endblock %}
+
+{% block content %}
+  <a class="btn btn-primary mb-3" href="{% url 'core:transaction-create' %}">
+    Adicione uma nova transação
+  </a>
+
+  <div class="card">
+    <div class="card-header">
+      Filtrar por carteira
+    </div>
+    <div class="card-body">
+      <nav class="nav nav-pills">
+        {% if wallet_id %}
+          <a class="nav-link" href="{% url 'core:transaction-list' %}">
+            Todos
+          </a>
+        {% else %}
+          <a class="nav-link active" aria-current="page" href="#">Todos</a>
+        {% endif %}
+
+        {% for wallet in wallet_list %}
+          {% if wallet_id == wallet.id %}
+            <a class="nav-link active" aria-current="page" href="#">
+              {{ wallet.name }}
+            </a>
+          {% else %}
+            <a class="nav-link" href="{% url 'core:transaction-list' wallet.id %}">
+              {{ wallet.name }}
+            </a>
+          {% endif %}
+        {% endfor %}
+      </nav>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="card">
+    <div class="card-header">
+      Transações
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Ativo</th>
+              <th>Ordem</th>
+              <th>Data da Movimentação</th>
+              <th>Qtd.</th>
+              <th>Preço</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for transaction in transaction_list %}
+              <tr>
+                <td>
+                  <a href="{% url 'core:transaction-update' transaction.id %}">
+                    {{ transaction.ticker.name }}
+                  </a>
+                </td>
+                <td>
+                  <div class="badge bg-{% if transaction.order == transaction.OrderTypes.BUY %}success{% else %}danger{% endif %}">
+                    {{ transaction.get_order_display }}
+                  </div>
+                </td>
+                <td>{{ transaction.date|date:"d/m/Y" }}</td>
+                <td>{{ transaction.quantity }}</td>
+                <td>{{ transaction.price|show_money }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5">Nenhuma transação registrada.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

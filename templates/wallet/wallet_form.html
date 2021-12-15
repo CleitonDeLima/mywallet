@@ -1,14 +1,21 @@
 {% extends '__base.html' %}
+{% load crispy_forms_tags %}
 {% load core_tags %}
 
-{% block head_title %}Nova Carteira{% endblock %}
+{% block head_title %}{% if wallet %}Alterar{% else %}Nova{% endif %} Carteira{% endblock %}
 
-{% block title %}Nova Carteira{% endblock %}
+{% block title %}{% if wallet %}Alterar{% else %}Nova{% endif %} Carteira{% endblock %}
 
 {% block breadcrumb %}
-  {% breadcrumb Dashboard="core:home" Carteiras="core:wallet-list" Nova="core:wallet-create" %}
+  {% breadcrumb_url "Home" "core:home" %}
+  {% breadcrumb_url "Carteiras" "core:wallet-list" %}
+  {% if wallet %}
+    {% breadcrumb_url wallet.name %}
+  {% else %}
+    {% breadcrumb_url "Nova" %}
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-  <p>novo</p>
+  {% crispy form %}
 {% endblock %}

@@ -1,5 +1,4 @@
 {% load static django_htmx %}
-{% load core_tags %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -23,9 +22,12 @@
 
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <div id="content">
-          {% block breadcrumb %}
-            {% breadcrumb Dashboard="core:home" %}
-          {% endblock %}
+
+          <nav aria-label="breadcrumb" class="mt-3">
+            <ol class="breadcrumb">
+              {% block breadcrumb %}{% endblock %}
+            </ol>
+          </nav>
 
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
             <h1 class="h2">{% block title %}{% endblock %}</h1>

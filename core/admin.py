@@ -1,20 +1,20 @@
 from django.contrib import admin
 
-from core.models import StockAsset, Ticket, Wallet
+from core.models import Ticker, Transaction, Wallet
 
 
-@admin.register(Ticket)
+@admin.register(Ticker)
 class TicketAdmin(admin.ModelAdmin):
     list_display = ["name", "price", "type", "updated_at"]
     list_filter = ["type"]
     search_fields = ["name"]
 
 
-@admin.register(StockAsset)
-class StockAssetAdmin(admin.ModelAdmin):
-    list_display = ["ticket", "quantity", "expected_allocation"]
-    autocomplete_fields = ["ticket"]
-    list_filter = ["wallet"]
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ["ticker", "order", "quantity", "price"]
+    autocomplete_fields = ["ticker"]
+    list_filter = ["order", "wallet"]
 
 
 @admin.register(Wallet)

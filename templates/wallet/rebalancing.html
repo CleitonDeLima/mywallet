@@ -6,12 +6,14 @@
 {% block title %}Rebalanceamento da Carteira{% endblock %}
 
 {% block breadcrumb %}
-  {% breadcrumb Dashboard="core:home" Carteiras="core:wallet-list" Rebalanceamento="core:rebalancing" %}
+  {% breadcrumb_url "Home" "core:home" %}
+  {% breadcrumb_url "Carteiras" "core:wallet-list" %}
+  {% breadcrumb_url "Rebalanceamento" active=True %}
 {% endblock %}
 
 {% block content %}
   <div class="table-responsive">
-    <table class="table">
+    <table class="table table-sm table-striped">
       <thead>
         <tr>
           <th>Ativo</th>
@@ -27,11 +29,11 @@
       <tbody>
         {% for asset in asset_list %}
           <tr>
-            <th>{{ asset.ticket.name }}</th>
+            <th>{{ asset.ticker.name }}</th>
             <td class="text-center">{{ asset.quantity }}</td>
-            <td class="text-end">{{ asset.ticket.price|show_money }}</td>
+            <td class="text-end">{{ asset.ticker.price|show_money }}</td>
             <td class="text-end">{{ asset.total_price|floatformat:2|show_money }}</td>
-            <td class="text-end {% if asset.allocated < asset.expected_allocation %}table-danger{% else %}table-success{% endif %}">
+            <td class="text-end {% if asset.allocated < asset.expected_allocation %}text-danger{% else %}text-success{% endif %}">
               {{ asset.allocated|floatformat:2 }} %
             </td>
             <td class="text-end">{{ asset.expected_allocation }} %</td>
@@ -47,7 +49,7 @@
       <tfoot>
         <tr class="table-dark">
           <th>Total</th>
-          <td colspan="7">R$ {{ total|floatformat:2 }}</td>
+          <td colspan="7">{{ total|floatformat:2|show_money }}</td>
         </tr>
       </tfoot>
     </table>

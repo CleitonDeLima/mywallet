@@ -1,0 +1,9 @@
+{% if active %}
+  <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+{% else %}
+  <li class="breadcrumb-item">
+    <a href="{% if url %}{{ url }}{% else %}#{% endif %}">
+      {{ title }}
+    </a>
+  </li>
+{% endif %}

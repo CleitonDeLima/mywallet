@@ -1,18 +1,33 @@
-from django.urls import path
+from django.urls import include, path
 
 from core import views
 
 app_name = "core"
 
-urlpatterns = [
-    path("", views.home, name="home"),
-    path("wallets/", views.wallet_list, name="wallet-list"),
-    path("wallets/create/", views.wallet_create, name="wallet-create"),
+wallets_urls = [
+    path("", views.wallet_list, name="wallet-list"),
+    path("create/", views.wallet_create, name="wallet-create"),
+    path("<int:wallet_id>/update/", views.wallet_update, name="wallet-update"),
     path(
-        "wallets/<int:wallet_id>/to-buy/",
+        "<int:wallet_id>/to-buy/",
         views.wallet_rebalancing,
         name="rebalancing",
     ),
-    path("assets/", views.asset_list, name="asset-list"),
-    path("assets/<int:wallet_id>/", views.asset_list, name="asset-list"),
+]
+
+transactions_urls = [
+    path("", views.transaction_list, name="transaction-list"),
+    path("<int:wallet_id>/", views.transaction_list, name="transaction-list"),
+    path("new/", views.transaction_create, name="transaction-create"),
+    path(
+        "<int:pk>/update/",
+        views.transaction_update,
+        name="transaction-update",
+    ),
+]
+
+urlpatterns = [
+    path("", views.home, name="home"),
+    path("wallets/", include(wallets_urls)),
+    path("transactions/", include(transactions_urls)),
 ]

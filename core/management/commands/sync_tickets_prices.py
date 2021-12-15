@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from pandas_datareader.data import DataReader
 
-from core.models import Ticket
+from core.models import Ticker
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ def retrieve_close_price(asset) -> Decimal:
 
     name = f"{asset}.SA"
     source = "yahoo"
-    logger.debug(f"Looking up the ticket {name} from {source}.")
+    logger.debug(f"Looking up the ticker {name} from {source}.")
 
     df = DataReader(
         name,
@@ -40,15 +40,15 @@ class Command(BaseCommand):
     help = "Updates stock price via yahoo finances"
 
     def handle(self, *args, **options):
-        tickets = []
+        tickers = []
 
-        for ticket in Ticket.objects.all():
-            ticket.price = retrieve_close_price(ticket.name)
-            ticket.updated_at = timezone.now()
-            tickets.append(ticket)
+        for ticker in Ticker.objects.all():
+            ticker.price = retrieve_close_price(ticker.name)
+            ticker.updated_at = timezone.now()
+            tickers.append(ticker)
 
-        rows_updated = Ticket.objects.bulk_update(
-            tickets,
+        rows_updated = Ticker.objects.bulk_update(
+            tickers,
             ["price", "updated_at"],
         )
         message = f"{rows_updated} updated tickets."

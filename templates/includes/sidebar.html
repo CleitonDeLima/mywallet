@@ -2,15 +2,18 @@
   <ul class="nav flex-column">
 
     <li class="nav-item">
-      <a class="nav-link" aria-current="page" href="{% url 'core:home' %}"
-        _="on click take .active">
-        Dashboard
+      <a class="nav-link" aria-current="page" href="{% url 'core:home' %}">
+        Home
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" aria-current="page" href="{% url 'core:wallet-list' %}"
-        _="on click take .active">
+      <a class="nav-link" aria-current="page" href="{% url 'core:wallet-list' %}">
         Carteiras
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" aria-current="page" href="{% url 'core:transaction-list' %}">
+        Transações
       </a>
     </li>
   </ul>

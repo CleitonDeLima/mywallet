@@ -1,0 +1,17 @@
+{% extends '__base.html' %}
+{% load crispy_forms_tags %}
+{% load core_tags %}
+
+{% block head_title %}Novo Ativo{% endblock %}
+
+{% block title %}Novo Ativo{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb_url "Home" "core:home" %}
+  {% breadcrumb_url "Transações" "core:transaction-list" %}
+  {% breadcrumb_url "Novo" %}
+{% endblock %}
+
+{% block content %}
+  {% crispy form %}
+{% endblock %}

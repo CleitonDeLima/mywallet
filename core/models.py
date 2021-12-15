@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import resolve_url
 from django.utils.translation import gettext_lazy as _
 
 
@@ -10,7 +11,7 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
-class Ticket(TimeStampedModel):
+class Ticker(TimeStampedModel):
     class Types(models.IntegerChoices):
         ACAO = 0, _("Ação")
         FII = 1, _("FII")
@@ -40,7 +41,7 @@ class Ticket(TimeStampedModel):
 
 
 class Wallet(TimeStampedModel):
-    name = models.CharField(_("Nome"), max_length=30)
+    name = models.CharField(_("Nome"), max_length=30, unique=True)
 
     class Meta:
         verbose_name = _("Carteira")
@@ -49,30 +50,43 @@ class Wallet(TimeStampedModel):
     def __str__(self):
         return self.name
 
+    def get_assets_url(self):
+        return resolve_url("core:asset-list", self.id)
 
-class StockAsset(TimeStampedModel):
-    ticket = models.ForeignKey(
-        "core.Ticket",
-        verbose_name=_("Papel"),
-        on_delete=models.PROTECT,
-    )
+
+class Transaction(TimeStampedModel):
+    class OrderTypes(models.TextChoices):
+        BUY = "b", _("Compra")
+        SELL = "s", _("Venda")
+
     wallet = models.ForeignKey(
         "core.Wallet",
         verbose_name=_("Carteira"),
         on_delete=models.SET_NULL,
-        related_name="assets",
+        related_name="transactions",
         null=True,
     )
-    quantity = models.PositiveIntegerField(_("Quantidade"))
-    expected_allocation = models.DecimalField(
-        _("Alocação Esperada"),
-        max_digits=5,
+    ticker = models.ForeignKey(
+        "core.Ticker",
+        verbose_name=_("Papel"),
+        on_delete=models.PROTECT,
+    )
+    date = models.DateField(_("Data da Negociação"))
+    price = models.DecimalField(
+        _("Valor Unitário"),
+        max_digits=15,
         decimal_places=2,
+    )
+    quantity = models.PositiveIntegerField(_("Quantidade"))
+    order = models.CharField(
+        _("Ordem"),
+        max_length=1,
+        choices=OrderTypes.choices,
     )
 
     class Meta:
-        verbose_name = _("Ativo")
-        verbose_name_plural = _("Ativos")
+        verbose_name = _("Transação")
+        verbose_name_plural = _("Transações")
 
     def __str__(self):
-        return f"{self.quantity} {self.ticket}"
+        return f"{self.get_order_display()} {self.quantity} {self.ticker}"

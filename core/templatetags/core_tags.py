@@ -1,22 +1,21 @@
+from contextlib import suppress
+
 from django import template
 from django.templatetags.l10n import localize
+from django.urls import reverse
+from django.urls.exceptions import NoReverseMatch
 
 register = template.Library()
 
 
-@register.inclusion_tag("templatetags/breadcrumb.html")
-def breadcrumb(**urls):
-    """
-    A class used to represent an Animal
+@register.inclusion_tag("templatetags/breadcrumb_url.html")
+def breadcrumb_url(title, url=None):
+    if url is not None:
+        with suppress(NoReverseMatch):
+            url = reverse(url)
 
-    ...
-
-    Attributes
-    ----------
-    urls: dict
-        The keys are the title and the value the url name.
-    """
-    return {"urls": urls}
+    active = not bool(url)
+    return {"title": title, "url": url, "active": active}
 
 
 @register.filter
