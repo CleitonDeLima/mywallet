@@ -3,6 +3,7 @@ from decimal import ROUND_UP, Decimal
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from pandas_datareader._utils import RemoteDataError
 from pandas_datareader.data import DataReader
 
 from core.models import Ticker
@@ -43,7 +44,12 @@ class Command(BaseCommand):
         tickers = []
 
         for ticker in Ticker.objects.all():
-            ticker.price = retrieve_close_price(ticker.name)
+            try:
+                ticker.price = retrieve_close_price(ticker.name)
+            except RemoteDataError:
+                self.stdout.write(self.style.ERROR(f"{ticker.name} not found."))
+                continue
+
             ticker.updated_at = timezone.now()
             tickers.append(ticker)
 
