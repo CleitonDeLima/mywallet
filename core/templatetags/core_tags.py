@@ -1,18 +1,18 @@
-from contextlib import suppress
-
 from django import template
+from django.shortcuts import resolve_url
 from django.templatetags.l10n import localize
-from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 
 register = template.Library()
 
 
 @register.inclusion_tag("templatetags/breadcrumb_url.html")
-def breadcrumb_url(title, url=None):
+def breadcrumb_url(title, url=None, *args):
     if url is not None:
-        with suppress(NoReverseMatch):
-            url = reverse(url)
+        try:
+            url = resolve_url(url, *args)
+        except NoReverseMatch:
+            url = None
 
     active = not bool(url)
     return {"title": title, "url": url, "active": active}
