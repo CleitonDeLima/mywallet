@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import Ticker, Transaction, Wallet
+from core.models import Ticker, Transaction, Wallet, WalletItem
 
 
 @admin.register(Ticker)
@@ -19,4 +19,9 @@ class TransactionAdmin(admin.ModelAdmin):
 
 @admin.register(Wallet)
 class WalletAdmin(admin.ModelAdmin):
+    ...
+
+
+@admin.register(WalletItem)
+class WalletItemAdmin(admin.ModelAdmin):
     ...

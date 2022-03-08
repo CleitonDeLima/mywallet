@@ -1,0 +1,51 @@
+{% extends '__base.html' %}
+{% load core_tags %}
+
+{% block head_title %}Ativos da Carteira{% endblock %}
+
+{% block title %}Ativos da Carteira{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb_url "Home" "core:home" %}
+  {% breadcrumb_url "Carteiras" "core:wallet-list" %}
+  {% breadcrumb_url "Ativos Cadastrados" %}
+{% endblock %}
+
+{% block content %}
+  <a class="btn btn-primary" href="{% url 'core:walletitem-create' wallet.id %}">
+    Cadastre um novo ativo
+  </a>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <td>Ativo</td>
+          <td>Entrada</td>
+          <td>Alocação</td>
+          <td>Preço de Entrada</td>
+          <td>Preço Teto</td>
+          <td>-</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in wallet_items %}
+          <tr>
+            <td>{{ item.ticker.name }}</td>
+            <td>{{ item.started_in }}</td>
+            <td>{{ item.allocation }}</td>
+            <td>{{ item.entry_price|floatformat:2|show_money }}</td>
+            <td>{{ item.ceiling_price|floatformat:2|show_money }}</td>
+            <td>
+              <a href="{% url 'core:walletitem-update' item.wallet_id item.id %}" class="btn btn-sm btn-info">Editar</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5">Nenhum ativo cadastrado.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

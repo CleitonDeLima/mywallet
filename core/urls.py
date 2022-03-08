@@ -9,9 +9,19 @@ wallets_urls = [
     path("create/", views.wallet_create, name="wallet-create"),
     path("<int:wallet_id>/update/", views.wallet_update, name="wallet-update"),
     path(
-        "<int:wallet_id>/to-buy/",
-        views.wallet_rebalancing,
-        name="rebalancing",
+        "<int:wallet_id>/items/",
+        views.wallet_item_list,
+        name="walletitem-list",
+    ),
+    path(
+        "<int:wallet_id>/items/create/",
+        views.wallet_item_create,
+        name="walletitem-create",
+    ),
+    path(
+        "<int:wallet_id>/items/<int:item_id>/update/",
+        views.wallet_item_update,
+        name="walletitem-update",
     ),
 ]
 

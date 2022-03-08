@@ -2,9 +2,20 @@ import factory
 from django.utils import timezone
 from faker import Factory as FakerFactory
 
-from core.models import Ticker, Transaction, Wallet
+from core.models import Ticker, Transaction, Wallet, WalletItem
 
 faker = FakerFactory.create()
+
+
+class TickerFactory(factory.django.DjangoModelFactory):
+    """Ticker factory."""
+
+    class Meta:
+        model = Ticker
+
+    name = factory.LazyAttribute(lambda x: faker.cryptocurrency_code())
+    price = 99.90
+    type = Ticker.Types.ACAO
 
 
 class WalletFactory(factory.django.DjangoModelFactory):
@@ -16,15 +27,19 @@ class WalletFactory(factory.django.DjangoModelFactory):
     name = factory.LazyAttribute(lambda x: faker.name())
 
 
-class TickerFactory(factory.django.DjangoModelFactory):
-    """Ticket factory."""
+class WalletItemFactory(factory.django.DjangoModelFactory):
+    """WalletItem factory."""
 
     class Meta:
-        model = Ticker
+        model = WalletItem
 
-    name = factory.LazyAttribute(lambda x: faker.cryptocurrency_code())
-    price = 99.90
-    type = Ticker.Types.ACAO
+    wallet = factory.SubFactory(WalletFactory)
+    ticker = factory.SubFactory(TickerFactory)
+    started_in = None
+    closed_in = None
+    allocation = 5
+    entry_price = 10
+    ceiling_price = 20
 
 
 class TransactionFactory(factory.django.DjangoModelFactory):

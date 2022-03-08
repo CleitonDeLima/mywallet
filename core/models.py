@@ -54,6 +54,49 @@ class Wallet(TimeStampedModel):
         return resolve_url("core:asset-list", self.id)
 
 
+class WalletItem(TimeStampedModel):
+    wallet = models.ForeignKey(
+        "core.Wallet",
+        verbose_name=_("Carteira"),
+        on_delete=models.CASCADE,
+        related_name="items",
+    )
+    ticker = models.ForeignKey(
+        "core.Ticker",
+        verbose_name=_("Papel"),
+        on_delete=models.CASCADE,
+    )
+    started_in = models.DateField(
+        verbose_name=_("Início"),
+        blank=True,
+        null=True,
+    )
+    closed_in = models.DateField(
+        verbose_name=_("Encerrado"),
+        blank=True,
+        null=True,
+    )
+    allocation = models.DecimalField(
+        verbose_name=_("Alocação"),
+        max_digits=5,
+        decimal_places=2,
+    )
+    entry_price = models.DecimalField(
+        verbose_name=_("Preço de Entrada"),
+        max_digits=15,
+        decimal_places=2,
+    )
+    ceiling_price = models.DecimalField(
+        verbose_name=_("Preço Teto"),
+        max_digits=15,
+        decimal_places=2,
+    )
+
+    class Meta:
+        verbose_name = _("Item da Carteira")
+        verbose_name_plural = _("Itens da Carteira")
+
+
 class Transaction(TimeStampedModel):
     class OrderTypes(models.TextChoices):
         BUY = "b", _("Compra")

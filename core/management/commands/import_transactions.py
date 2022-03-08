@@ -5,12 +5,16 @@ from decimal import Decimal
 
 from dateutil.parser import parse as parse_date
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
 from core.forms import TransactionForm
 from core.models import Ticker, Transaction, Wallet
 
 logger = logging.getLogger(__name__)
+
+
+def transform_to_decimal(value):
+    digit_value = value.replace(",", "").replace(".", "")
+    return Decimal(digit_value) / Decimal("100")
 
 
 class Command(BaseCommand):
@@ -31,19 +35,22 @@ class Command(BaseCommand):
         reader = csv.DictReader(file)
         objs = []
         for row in reader:
-            ticker_type = row["ticker_type"]
             ticker_name = row["ticker"]
-            ticker, _ = Ticker.objects.get_or_create(
-                name=ticker_name,
+            ticker_type = row["ticker_type"]
+            ticker, created = Ticker.objects.get_or_create(
+                name=ticker_name.upper(),
                 defaults={
                     "type": ticker_type,
                     "price": 0,
                 },
             )
+            if created:
+                self.stdout.write(self.style.WARNING(f"{ticker.name} created!"))
+
             date = parse_date(row["date"]).date()
             order = row["order"]
             quantity = int(row["quantity"])
-            price = Decimal(row["price"])
+            price = transform_to_decimal(row["price"])
             form = TransactionForm(
                 data={
                     "wallet": wallet.id,
@@ -54,8 +61,11 @@ class Command(BaseCommand):
                     "order": order,
                 }
             )
-            instance = form.save(commit=False)
-            objs.append(instance)
+            if form.is_valid():
+                instance = form.save(commit=False)
+                objs.append(instance)
+            else:
+                self.stdout.write(self.style.ERROR(str(form.errors)))
 
         results = Transaction.objects.bulk_create(objs)
 

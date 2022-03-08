@@ -20,11 +20,8 @@
       <div class="card-body">
         <h5 class="card-title">{{ wallet.name }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">Criado em {{ wallet.created_at|date:"d M Y" }}</h6>
-        <a class="card-link" href="#">
+        <a class="card-link" href="{% url 'core:walletitem-list' wallet.id %}">
           Ver Ativos
-        </a>
-        <a class="card-link" href="#">
-          Rebalanceamento
         </a>
         <a class="card-link" href="{% url 'core:wallet-update' wallet.id %}">
           Editar
