@@ -22,6 +22,14 @@ class Ticker(TimeStampedModel):
         _("Nome"),
         max_length=10,
     )
+    company_name = models.CharField(
+        _("Nome da Empresa"),
+        max_length=255,
+    )
+    document = models.CharField(
+        _("CNPJ da Empresa"),
+        max_length=14,
+    )
     price = models.DecimalField(
         _("Valor"),
         max_digits=15,
@@ -107,7 +115,6 @@ class Transaction(TimeStampedModel):
         verbose_name=_("Carteira"),
         on_delete=models.SET_NULL,
         related_name="transactions",
-        null=True,
     )
     ticker = models.ForeignKey(
         "core.Ticker",

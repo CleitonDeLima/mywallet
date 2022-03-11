@@ -1,9 +1,20 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import DecimalField, ExpressionWrapper, F, Q, Sum
+from django.db.models import (
+    Avg,
+    Case,
+    CharField,
+    DecimalField,
+    ExpressionWrapper,
+    F,
+    Q,
+    Sum,
+    Value,
+    When,
+)
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.forms import TransactionForm, WalletForm, WalletItemForm
-from core.models import Transaction, Wallet, WalletItem
+from core.models import Ticker, Transaction, Wallet, WalletItem
 from core.services import get_assets_to_buy, get_total_stock_asset
 
 
@@ -123,6 +134,36 @@ def transaction_update(request, pk):
 
     context = {"form": form, "transaction": transaction}
     return render(request, "transactions/transaction_form.html", context)
+
+
+@login_required
+def income_tax(request):
+    buy = Sum(
+        "quantity",
+        filter=Q(order=Transaction.OrderTypes.BUY),
+        default=0,
+    )
+    sell = Sum(
+        "quantity",
+        filter=Q(order=Transaction.OrderTypes.SELL),
+        default=0,
+    )
+    queryset = (
+        Transaction.objects.values(
+            "ticker__name",
+            "ticker__company_name",
+            "ticker__document",
+        )
+        .annotate(
+            quantity=buy - sell,
+            avg_price=Avg("price", filter=Q(order=Transaction.OrderTypes.BUY)),
+            type=F("ticker__type"),
+        )
+        .filter(date__year__lte=2021)
+        .order_by("type", "ticker__name")
+    )
+    context = {"record_list": queryset}
+    return render(request, "transactions/income_tax.html", context)
 
 
 @login_required

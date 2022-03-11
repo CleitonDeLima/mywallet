@@ -34,6 +34,7 @@ transactions_urls = [
         views.transaction_update,
         name="transaction-update",
     ),
+    path("tax/", views.income_tax, name="income_tax"),
 ]
 
 urlpatterns = [
