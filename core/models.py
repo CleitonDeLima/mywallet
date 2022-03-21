@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.shortcuts import resolve_url
 from django.utils.translation import gettext_lazy as _
@@ -50,6 +51,11 @@ class Ticker(TimeStampedModel):
 
 class Wallet(TimeStampedModel):
     name = models.CharField(_("Nome"), max_length=30, unique=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("Usuário"),
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         verbose_name = _("Carteira")
@@ -62,49 +68,6 @@ class Wallet(TimeStampedModel):
         return resolve_url("core:asset-list", self.id)
 
 
-class WalletItem(TimeStampedModel):
-    wallet = models.ForeignKey(
-        "core.Wallet",
-        verbose_name=_("Carteira"),
-        on_delete=models.CASCADE,
-        related_name="items",
-    )
-    ticker = models.ForeignKey(
-        "core.Ticker",
-        verbose_name=_("Papel"),
-        on_delete=models.CASCADE,
-    )
-    started_in = models.DateField(
-        verbose_name=_("Início"),
-        blank=True,
-        null=True,
-    )
-    closed_in = models.DateField(
-        verbose_name=_("Encerrado"),
-        blank=True,
-        null=True,
-    )
-    allocation = models.DecimalField(
-        verbose_name=_("Alocação"),
-        max_digits=5,
-        decimal_places=2,
-    )
-    entry_price = models.DecimalField(
-        verbose_name=_("Preço de Entrada"),
-        max_digits=15,
-        decimal_places=2,
-    )
-    ceiling_price = models.DecimalField(
-        verbose_name=_("Preço Teto"),
-        max_digits=15,
-        decimal_places=2,
-    )
-
-    class Meta:
-        verbose_name = _("Item da Carteira")
-        verbose_name_plural = _("Itens da Carteira")
-
-
 class Transaction(TimeStampedModel):
     class OrderTypes(models.TextChoices):
         BUY = "b", _("Compra")
@@ -113,7 +76,7 @@ class Transaction(TimeStampedModel):
     wallet = models.ForeignKey(
         "core.Wallet",
         verbose_name=_("Carteira"),
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name="transactions",
     )
     ticker = models.ForeignKey(

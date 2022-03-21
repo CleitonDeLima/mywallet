@@ -4,11 +4,13 @@ import logging
 from decimal import Decimal
 
 from dateutil.parser import parse as parse_date
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from core.forms import TransactionForm
 from core.models import Ticker, Transaction, Wallet
 
+User = get_user_model()
 logger = logging.getLogger(__name__)
 
 
@@ -51,12 +53,23 @@ class Command(BaseCommand):
     def add_arguments(self, parser) -> None:
         parser.add_argument("file", type=argparse.FileType("r"))
         parser.add_argument("wallet_name")
+        parser.add_argument("user_id")
 
     def handle(self, *args, **options):
         file = options["file"]
         wallet_name = options["wallet_name"]
+        user_id = options["user_id"]
 
-        wallet, created = Wallet.objects.get_or_create(name=wallet_name)
+        user = User.objects.filter(id=user_id).first()
+        if not user:
+            self.stdout.write(
+                self.style.ERROR(f"User with id {user_id} not found.")
+            )
+            return
+
+        wallet, created = Wallet.objects.get_or_create(
+            name=wallet_name, user=user
+        )
         if created:
             self.stdout.write(f"Wallet {wallet_name} created.")
 
@@ -81,7 +94,7 @@ class Command(BaseCommand):
 
             date = parse_date(row["date"]).date()
             price = transform_to_decimal(row["price"])
-            quantity = int(row["quantity"])
+            quantity = row["quantity"]
             order = get_order_type(row["order"])
             if order is None:
                 continue
@@ -117,7 +130,6 @@ class Command(BaseCommand):
     def create_transaction(self, wallet, ticker, date, price, quantity, order):
         form = TransactionForm(
             data={
-                "wallet": wallet.id,
                 "ticker": ticker.id,
                 "date": date,
                 "price": price,
@@ -126,6 +138,8 @@ class Command(BaseCommand):
             }
         )
         if form.is_valid():
-            return form.save(commit=False)
+            transaction = form.save(commit=False)
+            transaction.wallet = wallet
+            return transaction
 
         self.stdout.write(self.style.ERROR(str(form.errors)))

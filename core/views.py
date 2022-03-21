@@ -1,21 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import (
-    Avg,
-    Case,
-    CharField,
-    DecimalField,
-    ExpressionWrapper,
-    F,
-    Q,
-    Sum,
-    Value,
-    When,
-)
+from django.db.models import Avg, DecimalField, ExpressionWrapper, F, Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 
-from core.forms import TransactionForm, WalletForm, WalletItemForm
-from core.models import Ticker, Transaction, Wallet, WalletItem
-from core.services import get_assets_to_buy, get_total_stock_asset
+from core.forms import TransactionForm
+from core.models import Transaction, Wallet
 
 
 @login_required
@@ -24,90 +12,11 @@ def home(request):
 
 
 @login_required
-def wallet_list(request):
-    context = {"wallet_list": Wallet.objects.all()}
-    return render(request, "wallet/wallet_list.html", context)
-
-
-@login_required
-def wallet_create(request):
-    form = WalletForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        wallet = form.save()
-        return redirect("core:walletitem-list", wallet.id)
-
-    context = {"form": form}
-    return render(request, "wallet/wallet_form.html", context)
-
-
-@login_required
-def wallet_update(request, wallet_id):
-    wallet = get_object_or_404(Wallet, id=wallet_id)
-    form = WalletForm(request.POST or None, instance=wallet)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        return redirect("core:wallet-list")
-
-    context = {"form": form, "wallet": wallet}
-    return render(request, "wallet/wallet_form.html", context)
-
-
-@login_required
-def wallet_item_list(request, wallet_id):
-    wallet = get_object_or_404(Wallet, id=wallet_id)
-    wallet_items = wallet.items.all()
-    context = {"wallet": wallet, "wallet_items": wallet_items}
-    return render(request, "wallet/wallet_item_list.html", context)
-
-
-@login_required
-def wallet_item_create(request, wallet_id):
-    wallet = get_object_or_404(Wallet, id=wallet_id)
-    form = WalletItemForm(request.POST or None)
-
-    if request.method == "POST" and form.is_valid():
-        item = form.save(commit=False)
-        item.wallet = wallet
-        item.save()
-        return redirect("core:walletitem-list", wallet.id)
-
-    context = {"wallet": wallet, "form": form}
-    return render(request, "wallet/wallet_item_form.html", context)
-
-
-@login_required
-def wallet_item_update(request, wallet_id, item_id):
-    item = get_object_or_404(WalletItem, id=item_id, wallet_id=wallet_id)
-    form = WalletItemForm(request.POST or None, instance=item)
-
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        return redirect("core:walletitem-list", item.wallet_id)
-
-    context = {"item": item, "wallet": item.wallet, "form": form}
-    return render(request, "wallet/wallet_item_form.html", context)
-
-
-@login_required
-def wallet_rebalancing(request, wallet_id):
-    wallet = get_object_or_404(Wallet, id=wallet_id)
-    total = get_total_stock_asset(wallet)
-    queryset = get_assets_to_buy(wallet, total)
-    context = {"total": total, "asset_list": queryset}
-    return render(request, "wallet/rebalancing.html", context)
-
-
-@login_required
-def transaction_list(request, wallet_id=None):
-    if wallet_id:
-        queryset = Transaction.objects.filter(wallet_id=wallet_id)
-    else:
-        queryset = Transaction.objects.all()
+def transaction_list(request):
+    wallet = Wallet.objects.first()
 
     context = {
-        "transaction_list": queryset.select_related("ticker"),
-        "wallet_list": Wallet.objects.all(),
-        "wallet_id": wallet_id,
+        "transaction_list": wallet.transactions.select_related("ticker"),
     }
     return render(request, "transactions/transaction_list.html", context)
 
@@ -116,7 +25,9 @@ def transaction_list(request, wallet_id=None):
 def transaction_create(request):
     form = TransactionForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
-        form.save()
+        transaction = form.save(commit=False)
+        transaction.wallet = Wallet.objects.first()
+        transaction.save()
         return redirect("core:transaction-list")
 
     context = {"form": form}
