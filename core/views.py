@@ -1,9 +1,12 @@
+from io import StringIO
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, DecimalField, ExpressionWrapper, F, Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 
-from core.forms import TransactionForm
-from core.models import Transaction, Wallet
+from core.forms import TransactionForm, TransactionImportForm
+from core.management.commands.import_transactions import import_transactions
+from core.models import Transaction
 
 
 @login_required
@@ -13,7 +16,7 @@ def home(request):
 
 @login_required
 def transaction_list(request):
-    wallet = Wallet.objects.first()
+    wallet = request.user.wallets.first()
 
     context = {
         "transaction_list": wallet.transactions.select_related("ticker"),
@@ -26,7 +29,7 @@ def transaction_create(request):
     form = TransactionForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         transaction = form.save(commit=False)
-        transaction.wallet = Wallet.objects.first()
+        transaction.wallet = request.user.wallets.first()
         transaction.save()
         return redirect("core:transaction-list")
 
@@ -45,6 +48,19 @@ def transaction_update(request, pk):
 
     context = {"form": form, "transaction": transaction}
     return render(request, "transactions/transaction_form.html", context)
+
+
+@login_required
+def transaction_import(request):
+    form = TransactionImportForm(request.POST or None, request.FILES or None)
+    if request.method == "POST" and form.is_valid():
+        wallet = request.user.wallets.first()
+        file = form.cleaned_data["file"].read().decode("utf-8")
+        import_transactions(StringIO(file), wallet)
+        return redirect("core:transaction-list")
+
+    context = {"form": form}
+    return render(request, "transactions/transaction_import.html", context)
 
 
 @login_required

@@ -47,6 +47,60 @@ def get_order_type(value):
     return type
 
 
+def import_transactions(csv_file, wallet):
+    """
+    Importa as tracações de um CSV.
+    O retorno é a quantidade de transações importadas.
+    """
+    fieldnames = [
+        "date",
+        "ticker_type",
+        "ticker",
+        "order",
+        "quantity",
+        "price",
+    ]
+    reader = csv.DictReader(csv_file, fieldnames=fieldnames)
+    transactions = []
+    for row in reader:
+        ticker_name = row["ticker"]
+        ticker_type = get_ticker_type(row["ticker_type"])
+
+        if ticker_type is None:
+            continue
+
+        ticker, _ = Ticker.objects.get_or_create(
+            name=ticker_name.upper(),
+            defaults={
+                "type": ticker_type,
+                "price": 0,
+            },
+        )
+
+        date = parse_date(row["date"]).date()
+        price = transform_to_decimal(row["price"])
+        quantity = row["quantity"]
+        order = get_order_type(row["order"])
+        if order is None:
+            continue
+
+        form = TransactionForm(
+            data={
+                "ticker": ticker.id,
+                "date": date,
+                "price": price,
+                "quantity": quantity,
+                "order": order,
+            }
+        )
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.wallet = wallet
+            transactions.append(transaction)
+
+    return Transaction.objects.bulk_create(transactions)
+
+
 class Command(BaseCommand):
     help = "Updates stock price via yahoo finances"
 
@@ -73,73 +127,6 @@ class Command(BaseCommand):
         if created:
             self.stdout.write(f"Wallet {wallet_name} created.")
 
-        fieldnames = [
-            "date",
-            "ticker_type",
-            "ticker",
-            "order",
-            "quantity",
-            "price",
-        ]
-        reader = csv.DictReader(file, fieldnames=fieldnames)
-        transactions = []
-        for row in reader:
-            ticker_name = row["ticker"]
-            ticker_type = get_ticker_type(row["ticker_type"])
-
-            if ticker_type is None:
-                continue
-
-            ticker = self.create_ticker(ticker_name, ticker_type)
-
-            date = parse_date(row["date"]).date()
-            price = transform_to_decimal(row["price"])
-            quantity = row["quantity"]
-            order = get_order_type(row["order"])
-            if order is None:
-                continue
-
-            transaction = self.create_transaction(
-                wallet,
-                ticker,
-                date,
-                price,
-                quantity,
-                order,
-            )
-            if transaction:
-                transactions.append(transaction)
-
-        results = Transaction.objects.bulk_create(transactions)
-        message = f"{len(results)} transactions added."
+        objs = import_transactions(file, wallet)
+        message = f"{len(objs)} transactions added."
         self.stdout.write(self.style.SUCCESS(message))
-
-    def create_ticker(self, ticker_name, ticker_type):
-        ticker, created = Ticker.objects.get_or_create(
-            name=ticker_name.upper(),
-            defaults={
-                "type": ticker_type,
-                "price": 0,
-            },
-        )
-        if created:
-            self.stdout.write(self.style.WARNING(f"{ticker.name} created!"))
-
-        return ticker
-
-    def create_transaction(self, wallet, ticker, date, price, quantity, order):
-        form = TransactionForm(
-            data={
-                "ticker": ticker.id,
-                "date": date,
-                "price": price,
-                "quantity": quantity,
-                "order": order,
-            }
-        )
-        if form.is_valid():
-            transaction = form.save(commit=False)
-            transaction.wallet = wallet
-            return transaction
-
-        self.stdout.write(self.style.ERROR(str(form.errors)))

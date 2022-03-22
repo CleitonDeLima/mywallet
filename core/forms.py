@@ -1,6 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
+from django.core.validators import FileExtensionValidator
 
 from core.models import Transaction, Wallet
 
@@ -25,3 +26,20 @@ class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ["ticker", "date", "price", "quantity", "order"]
+
+
+class TransactionImportForm(forms.Form):
+    file = forms.FileField(
+        label="Arquivo de Transações",
+        widget=forms.ClearableFileInput(attrs={"accept": ".csv"}),
+        validators=[FileExtensionValidator(["csv"])],
+        help_text=(
+            "Cuidado para não escolher um arquivo já importado, "
+            "pode duplicar suas transações."
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit("submit", "Importar registros"))

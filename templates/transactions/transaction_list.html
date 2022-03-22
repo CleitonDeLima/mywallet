@@ -11,6 +11,12 @@
 {% endblock %}
 
 {% block content %}
+  <div class="row mb-3">
+    <div class="col">
+      <a class="float-end" href="{% url 'core:transaction-import' %}">Importar arquivo</a>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-header">
       <a class="btn btn-primary" href="{% url 'core:transaction-create' %}">

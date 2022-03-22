@@ -55,6 +55,7 @@ class Wallet(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         verbose_name=_("Usuário"),
         on_delete=models.CASCADE,
+        related_name="wallets",
     )
 
     class Meta:

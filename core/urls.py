@@ -13,7 +13,8 @@ transactions_urls = [
         views.transaction_update,
         name="transaction-update",
     ),
-    path("tax/", views.income_tax, name="income_tax"),
+    path("tax/", views.income_tax, name="income-tax"),
+    path("import/", views.transaction_import, name="transaction-import"),
 ]
 
 urlpatterns = [
