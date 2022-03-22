@@ -1,5 +1,7 @@
+from allauth.account.signals import user_signed_up
 from django.conf import settings
 from django.db import models
+from django.dispatch import receiver
 from django.shortcuts import resolve_url
 from django.utils.translation import gettext_lazy as _
 
@@ -50,7 +52,7 @@ class Ticker(TimeStampedModel):
 
 
 class Wallet(TimeStampedModel):
-    name = models.CharField(_("Nome"), max_length=30, unique=True)
+    name = models.CharField(_("Nome"), max_length=30)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_("Usuário"),
@@ -104,3 +106,8 @@ class Transaction(TimeStampedModel):
 
     def __str__(self):
         return f"{self.get_order_display()} {self.quantity} {self.ticker}"
+
+
+@receiver(user_signed_up)
+def create_user_wallet(request, user, **kwargs):
+    Wallet.objects.create(name="Principal", user=user)
