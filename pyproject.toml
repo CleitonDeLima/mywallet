@@ -5,7 +5,7 @@ description = ""
 authors = ["Cleiton Lima <cleiton.limapin@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "3.10.3"
 Django = "^4.0.2"
 django-debug-toolbar = "^3.2.4"
 django-extensions = "^3.1.5"
