@@ -51,6 +51,42 @@ def transaction_update(request, pk):
 
 
 @login_required
+def transaction_delete(request, pk):
+    transaction = get_object_or_404(
+        Transaction, id=pk, wallet__user_id=request.user.id
+    )
+
+    if request.method == "POST":
+        transaction.delete()
+        return redirect("core:transaction-list")
+
+    context = {"transaction": transaction}
+    return render(
+        request, "transactions/transaction_confirm_delete.html", context
+    )
+
+
+@login_required
+def transaction_delete_all(request):
+    queryset = Transaction.objects.filter(wallet__user_id=request.user.id)
+
+    if request.method == "POST":
+        queryset.delete()
+        return redirect("core:transaction-list")
+
+    total = queryset.count()
+    context = {
+        "message": (
+            f"Tem certeza que deseja excluir as {total} transações? "
+            "Isso não pode ser desfeito."
+        ),
+    }
+    return render(
+        request, "transactions/transaction_confirm_delete.html", context
+    )
+
+
+@login_required
 def transaction_import(request):
     form = TransactionImportForm(request.POST or None, request.FILES or None)
     if request.method == "POST" and form.is_valid():
