@@ -22,10 +22,11 @@
       <a class="btn btn-primary" href="{% url 'core:transaction-create' %}">
         Adicione uma nova transação
       </a>
+      <a class="btn btn-danger float-end" href="{% url 'core:transaction-delete-all' %}">Excluir Todos</a>
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-sm">
+        <table class="table">
           <thead>
             <tr>
               <th>Ativo</th>
@@ -33,6 +34,7 @@
               <th>Data da Movimentação</th>
               <th>Qtd.</th>
               <th>Preço</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -51,10 +53,15 @@
                 <td>{{ transaction.date|date:"d/m/Y" }}</td>
                 <td>{{ transaction.quantity }}</td>
                 <td>{{ transaction.price|show_money }}</td>
+                <td>
+                  <a href="{% url 'core:transaction-delete' transaction.id %}" class="btn btn-sm btn-danger">
+                    <i class="fa-solid fa-trash"></i>
+                  </a>
+                </td>
               </tr>
             {% empty %}
               <tr>
-                <td colspan="5">Nenhuma transação registrada.</td>
+                <td colspan="6">Nenhuma transação registrada.</td>
               </tr>
             {% endfor %}
           </tbody>

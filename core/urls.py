@@ -13,6 +13,16 @@ transactions_urls = [
         views.transaction_update,
         name="transaction-update",
     ),
+    path(
+        "<int:pk>/delete/",
+        views.transaction_delete,
+        name="transaction-delete",
+    ),
+    path(
+        "all/delete/",
+        views.transaction_delete_all,
+        name="transaction-delete-all",
+    ),
     path("tax/", views.income_tax, name="income-tax"),
     path("import/", views.transaction_import, name="transaction-import"),
 ]
