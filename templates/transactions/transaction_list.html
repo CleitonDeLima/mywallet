@@ -1,13 +1,11 @@
-{% extends '__base.html' %}
+{% extends 'base.html' %}
 {% load core_tags %}
 
-{% block head_title %}Transações{% endblock %}
-
-{% block title %}Transações{% endblock %}
+{% block head_title %}{{ title }}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block breadcrumb %}
-  {% breadcrumb_url "Home" "core:home" %}
-  {% breadcrumb_url "Transações" %}
+  {% breadcrumb_url title %}
 {% endblock %}
 
 {% block content %}
@@ -17,56 +15,63 @@
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-header">
-      <a class="btn btn-primary" href="{% url 'core:transaction-create' %}">
-        Adicione uma nova transação
-      </a>
-      <a class="btn btn-danger float-end" href="{% url 'core:transaction-delete-all' %}">Excluir Todos</a>
+  <div class="row mb-2">
+    <div class="col">
+      <a class="btn btn-outline-primary" href="{% url 'core:transaction-create' %}">Adicione uma nova transação</a>
     </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Ativo</th>
-              <th>Ordem</th>
-              <th>Data da Movimentação</th>
-              <th>Qtd.</th>
-              <th>Preço</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for transaction in transaction_list %}
-              <tr>
-                <td>
-                  <a href="{% url 'core:transaction-update' transaction.id %}">
-                    {{ transaction.ticker.name }}
-                  </a>
-                </td>
-                <td>
-                  <div class="badge bg-{% if transaction.order == transaction.OrderTypes.BUY %}success{% else %}danger{% endif %}">
-                    {{ transaction.get_order_display }}
-                  </div>
-                </td>
-                <td>{{ transaction.date|date:"d/m/Y" }}</td>
-                <td>{{ transaction.quantity }}</td>
-                <td>{{ transaction.price|show_money }}</td>
-                <td>
-                  <a href="{% url 'core:transaction-delete' transaction.id %}" class="btn btn-sm btn-danger">
-                    <i class="fa-solid fa-trash"></i>
-                  </a>
-                </td>
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="6">Nenhuma transação registrada.</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+    <div class="col">
+      <a class="btn btn-outline-danger float-end" href="{% url 'core:transaction-delete-all' %}">Excluir Todos</a>
     </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-borderless table-hover">
+      <thead>
+        <tr>
+          <th>Ativo</th>
+          <th>Ordem</th>
+          <th>Data da Movimentação</th>
+          <th>Qtd.</th>
+          <th>Preço</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for transaction in transaction_list %}
+          <tr>
+            <td>
+              <a href="{% url 'core:transaction-update' transaction.id %}">
+                {% if transaction.ticker.type == 0 %}
+                  <span class="badge bg-primary">{{ transaction.ticker.name }}</span>
+                {% elif transaction.ticker.type == 1 %}
+                  <span class="badge bg-danger">{{ transaction.ticker.name }}</span>
+                {% elif transaction.ticker.type == 2 %}
+                  <span class="badge bg-warning text-dark">{{ transaction.ticker.name }}</span>
+                {% elif transaction.ticker.type == 3 %}
+                  <span class="badge bg-dark">{{ transaction.ticker.name }}</span>
+                {% endif %}
+              </a>
+            </td>
+            <td>
+              <div class="badge bg-{% if transaction.order == transaction.OrderTypes.BUY %}success{% else %}danger{% endif %}">
+                {{ transaction.get_order_display }}
+              </div>
+            </td>
+            <td>{{ transaction.date|date:"d/m/Y" }}</td>
+            <td>{{ transaction.quantity }}</td>
+            <td>{{ transaction.price|show_money }}</td>
+            <td>
+              <a href="{% url 'core:transaction-delete' transaction.id %}" class="btn btn-sm btn-danger">
+                <i class="fa-solid fa-trash"></i>
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6">Nenhuma transação registrada.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock %}

@@ -1,0 +1,23 @@
+{% extends "core.html" %}
+
+{% block body %}
+  {% block header %}
+    {% if request.user.is_authenticated %}
+      {% include 'includes/header.html' %}
+    {% endif %}
+  {% endblock %}
+
+  <div class="container">
+    <nav aria-label="breadcrumb" class="mt-3">
+      <ol class="breadcrumb">
+        {% block breadcrumb %}{% endblock %}
+      </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+      <h1 class="h2">{% block title %}{% endblock %}</h1>
+    </div>
+
+    {% block content %}{% endblock %}
+  </div>
+{% endblock %}

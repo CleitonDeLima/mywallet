@@ -29,5 +29,6 @@ transactions_urls = [
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("account/", views.account_menu, name="account-menu"),
     path("transactions/", include(transactions_urls)),
 ]
