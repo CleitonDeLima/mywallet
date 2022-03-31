@@ -15,11 +15,17 @@ def home(request):
 
 
 @login_required
+def account_menu(request):
+    return render(request, "account/menu.html")
+
+
+@login_required
 def transaction_list(request):
     wallet = request.user.wallets.first()
 
     context = {
         "transaction_list": wallet.transactions.select_related("ticker"),
+        "title": "Transações",
     }
     return render(request, "transactions/transaction_list.html", context)
 

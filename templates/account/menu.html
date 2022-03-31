@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block head_title %}Minha Conta{% endblock %}
+{% block title %}Minha Conta{% endblock %}
+
+{% block content %}
+  <div class="list-group">
+    <a href="{% url 'account_change_password' %}" class="list-group-item list-group-item-action">
+      Mudar Senha
+    </a>
+  </div>
+{% endblock %}

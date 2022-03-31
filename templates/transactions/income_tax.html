@@ -1,4 +1,4 @@
-{% extends '__base.html' %}
+{% extends 'base.html' %}
 {% load core_tags %}
 
 {% block head_title %}Declaração do IR{% endblock %}
@@ -6,7 +6,6 @@
 {% block title %}Declaração do IR{% endblock %}
 
 {% block breadcrumb %}
-  {% breadcrumb_url "Home" "core:home" %}
   {% breadcrumb_url "Declaração do IR" %}
 {% endblock %}
 
@@ -39,22 +38,26 @@
       <div class="tab-content" id="tab-content">
         {% for type, items in records %}
           <div class="tab-pane fade show{% if forloop.first %} active{% endif %}" id="tab-{{ type }}-content" role="tabpanel" aria-labelledby="{{ type }}-tab">
-            {% for item in items %}
-              <div class="card mb-2">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col">
-                      <p>{{ item.ticker__name|upper }} {{ item.quantity }} UNIDS {{ item.ticker__company_name|upper }}</p>
-                      <p>{{ item.avg_price|floatformat:2|show_money }}</p>
-                      <button class="btn btn-link btn-sm">Copiar</butt>
-                    </div>
-                    <div class="col">
-                      <p>CNPJ: {{ item.ticker__document }}</p>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+              {% for item in items %}
+                <div class="col">
+                  <div class="card h-100 mb-2">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col">
+                          <p>{{ item.ticker__name|upper }} {{ item.quantity }} UNIDS - {{ item.ticker__company_name|upper }}</p>
+                          <p>{{ item.avg_price|floatformat:2|show_money }}</p>
+                          <button class="btn btn-link btn-sm">Copiar</butt>
+                        </div>
+                        <div class="col">
+                          <p>CNPJ: {{ item.ticker__document }}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            {% endfor %}
+              {% endfor %}
+            </div>
           </div>
         {% endfor %}
       </div>
