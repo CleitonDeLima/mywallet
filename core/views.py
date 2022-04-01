@@ -24,7 +24,9 @@ def transaction_list(request):
     wallet = request.user.wallets.first()
 
     context = {
-        "transaction_list": wallet.transactions.select_related("ticker"),
+        "transaction_list": wallet.transactions.select_related(
+            "ticker"
+        ).order_by("created_at"),
         "title": "Transações",
     }
     return render(request, "transactions/transaction_list.html", context)
