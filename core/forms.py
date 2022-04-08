@@ -4,12 +4,13 @@ from django import forms
 from django.core.validators import FileExtensionValidator
 
 from core.models import Transaction, Wallet
+from flatpickr.forms import FlatPickrDateInput
 
 
 class WalletForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
+        self.helper = FormHelper(self)
         self.helper.add_input(Submit("submit", "Salvar"))
 
     class Meta:
@@ -20,12 +21,14 @@ class WalletForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
+        self.helper = FormHelper(self)
+        self.helper.include_media = False
         self.helper.add_input(Submit("submit", "Salvar"))
 
     class Meta:
         model = Transaction
         fields = ["ticker", "date", "price", "quantity", "order"]
+        widgets = {"date": FlatPickrDateInput({"dateFormat": "d/m/Y"})}
 
 
 class TransactionImportForm(forms.Form):
@@ -41,5 +44,5 @@ class TransactionImportForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
+        self.helper = FormHelper(self)
         self.helper.add_input(Submit("submit", "Importar registros"))

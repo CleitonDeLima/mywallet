@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "core",
+    "flatpickr",
 ]
 
 MIDDLEWARE = [
@@ -150,6 +151,9 @@ STATICFILES_DIRS = [
 STATIC_ROOT = "staticfiles"
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "mediafiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-auto-field
