@@ -1,9 +1,14 @@
 import pytest
 from pytest_factoryboy import register
 
-from core.models import Ticker
-from tests.factories import TickerFactory, TransactionFactory, WalletFactory
+from tests.factories import (
+    TickerFactory,
+    TransactionFactory,
+    UserFactory,
+    WalletFactory,
+)
 
+register(UserFactory)
 register(TickerFactory)
 register(WalletFactory)
 register(TransactionFactory)
