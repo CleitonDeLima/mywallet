@@ -7,17 +7,16 @@ Cadastre seus ativos e veja a melhor oportunidade de compra com base nas suas me
 1. Crie um ambiente virtual para o projeto:
 
 ```shell
-python -m venv .venv
-source .venv/bin/activate
+poetry shell
 ```
 
 2. Instale as dependencias do projeto:
 
 ```shell
-python -m pip install -r requirements-dev.txt
+poetry install
 ```
 
-3. Crie seu banco de dados:
+3. Crie seu banco de dados e rode as migrações:
 
 ```shell
 python manage.py migrate
