@@ -1,10 +1,20 @@
 import factory
+from django.conf import settings
 from django.utils import timezone
 from faker import Factory as FakerFactory
 
-from core.models import Ticker, Transaction, Wallet, WalletItem
+from core.models import Ticker, Transaction, Wallet
 
 faker = FakerFactory.create()
+
+
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = settings.AUTH_USER_MODEL
+        django_get_or_create = ["email"]
+
+    username = factory.LazyAttribute(lambda x: faker.name())
+    email = "user@test.com"
 
 
 class TickerFactory(factory.django.DjangoModelFactory):
@@ -25,21 +35,7 @@ class WalletFactory(factory.django.DjangoModelFactory):
         model = Wallet
 
     name = factory.LazyAttribute(lambda x: faker.name())
-
-
-class WalletItemFactory(factory.django.DjangoModelFactory):
-    """WalletItem factory."""
-
-    class Meta:
-        model = WalletItem
-
-    wallet = factory.SubFactory(WalletFactory)
-    ticker = factory.SubFactory(TickerFactory)
-    started_in = None
-    closed_in = None
-    allocation = 5
-    entry_price = 10
-    ceiling_price = 20
+    user = factory.SubFactory(UserFactory)
 
 
 class TransactionFactory(factory.django.DjangoModelFactory):
