@@ -66,7 +66,8 @@ FLATPICKR_TRANSLATIONS = [
 
 
 def get_flatpickr_locale(code):
-    code = code.replace("pt-br", "pt")  # TODO: Optimize options
+    if isinstance(code, str):
+        code = code.replace("pt-br", "pt")  # TODO: Optimize options
 
     if code not in FLATPICKR_TRANSLATIONS:
         code = "en"
