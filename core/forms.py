@@ -1,5 +1,6 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+from decimal_mask.widgets import MoneyMaskWidget
 from django import forms
 from django.core.validators import FileExtensionValidator
 
@@ -28,7 +29,18 @@ class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ["ticker", "date", "price", "quantity", "order"]
-        widgets = {"date": FlatPickrDateInput({"dateFormat": "d/m/Y"})}
+        widgets = {
+            "date": FlatPickrDateInput({"dateFormat": "d/m/Y"}),
+            "price": MoneyMaskWidget(
+                decimal_attrs={
+                    "locales": "pt-BR",
+                    "format": {
+                        "style": "currency",
+                        "currency": "BRL",
+                    },
+                }
+            ),
+        }
 
 
 class TransactionImportForm(forms.Form):
