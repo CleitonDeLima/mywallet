@@ -130,7 +130,11 @@ def income_tax(request):
             avg_price=Avg("price", filter=Q(order=Transaction.OrderTypes.BUY)),
             type=F("ticker__type"),
         )
-        .filter(wallet__user_id=request.user.id, date__year__lte=2021)
+        .filter(
+            wallet__user_id=request.user.id,
+            quantity__gt=0,
+            date__year__lte=2021,
+        )
         .order_by("type", "ticker__name")
     )
     context = {"record_list": queryset}
