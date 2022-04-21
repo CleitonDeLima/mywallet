@@ -52,7 +52,7 @@
                           <p>CNPJ: <strong>{{ item.ticker__document }}</strong></p>
                         </div>
                       </div>
-                      <a class="btn-copy"
+                      <button class="btn btn-outline-primary btn-sm btn-copy"
                         href="#"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
@@ -60,7 +60,7 @@
                         title="Copiado!"
                         data-clipboard-text="{% spaceless %}{% include "transactions/snippets/tax_info.html" with item=item only %}{% endspaceless %}">
                         Copiar
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
