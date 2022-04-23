@@ -27,7 +27,7 @@ def transaction_list(request):
         "-date"
     )
     paginator = Paginator(transaction_list, 20)
-    page = request.GET.get("page")
+    page = request.GET.get("page", 1)
     page_obj = paginator.get_page(page)
     page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page)
     context = {
