@@ -1,0 +1,30 @@
+name: Minha Carteira CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.10.3
+    env:
+      SECRET_KEY: "not-secret"
+      DEBUG: "False"
+      ALLOWED_HOSTS: "*"
+      DATABASE_URL: "sqlite:///db.sqlite3"
+    steps:
+    - uses: actions/checkout@v3
+    - uses: abatilo/actions-poetry@v2.1.4
+      with:
+        poetry-version: 1.1.13
+    - name: Test with Django
+      run: |
+        poetry install
+        poetry run python manage.py collectstatic
+        poetry run pytest --migrations
