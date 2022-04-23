@@ -73,5 +73,7 @@
         {% endfor %}
       </tbody>
     </table>
+
+    {% include "includes/pagination.html" with page_obj=page_obj %}
   </div>
 {% endblock %}

@@ -1,6 +1,7 @@
 from io import StringIO
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Avg, DecimalField, ExpressionWrapper, F, Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -22,11 +23,16 @@ def account_menu(request):
 @login_required
 def transaction_list(request):
     wallet = request.user.wallets.first()
-
+    transaction_list = wallet.transactions.select_related("ticker").order_by(
+        "-date"
+    )
+    paginator = Paginator(transaction_list, 20)
+    page = request.GET.get("page")
+    page_obj = paginator.get_page(page)
+    page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page)
     context = {
-        "transaction_list": wallet.transactions.select_related(
-            "ticker"
-        ).order_by("-date"),
+        "transaction_list": page_obj.object_list,
+        "page_obj": page_obj,
         "title": "Transações",
     }
     return render(request, "transactions/transaction_list.html", context)
