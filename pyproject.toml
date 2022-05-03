@@ -25,7 +25,7 @@ coral-decimal-mask = "^0.2.0"
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
 pytest-django = "^4.5.2"
-pytest-factoryboy = "^2.1.0"
+pytest-factoryboy = "^2.2.0"
 black = "^22.3.0"
 flake8 = "^4.0.1"
 ipython = "^8.2.0"
