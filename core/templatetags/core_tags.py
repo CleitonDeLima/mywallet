@@ -1,5 +1,6 @@
 from django import template
 from django.shortcuts import resolve_url
+from django.template.defaultfilters import floatformat
 from django.templatetags.l10n import localize
 from django.urls.exceptions import NoReverseMatch
 
@@ -20,5 +21,6 @@ def breadcrumb_url(title, url=None, *args):
 
 @register.filter
 def show_money(value, prefix="R$"):
+    value = floatformat(value, 2)
     localize_value = localize(value)
     return f"{prefix} {localize_value}"

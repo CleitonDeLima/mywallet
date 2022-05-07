@@ -1,6 +1,7 @@
 from allauth.account.signals import user_signed_up
 from django.conf import settings
 from django.db import models
+from django.db.models import Case, F, When
 from django.dispatch import receiver
 from django.shortcuts import resolve_url
 from django.utils.translation import gettext_lazy as _
@@ -71,6 +72,22 @@ class Wallet(TimeStampedModel):
         return resolve_url("core:asset-list", self.id)
 
 
+class TransactionManager(models.Manager):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.annotate(
+            total_price=Case(
+                When(
+                    order=Transaction.OrderTypes.SELL,
+                    then=-F("price") * F("quantity"),
+                ),
+                default=F("price") * F("quantity"),
+                output_field=models.DecimalField(),
+            ),
+        )
+        return queryset
+
+
 class Transaction(TimeStampedModel):
     class OrderTypes(models.TextChoices):
         BUY = "b", _("Compra")
@@ -99,6 +116,8 @@ class Transaction(TimeStampedModel):
         max_length=1,
         choices=OrderTypes.choices,
     )
+
+    objects = TransactionManager()
 
     class Meta:
         verbose_name = _("Transação")

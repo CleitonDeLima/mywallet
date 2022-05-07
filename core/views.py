@@ -7,12 +7,27 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from core.forms import TransactionForm, TransactionImportForm
 from core.management.commands.import_transactions import import_transactions
-from core.models import Transaction
+from core.models import Ticker, Transaction
 
 
 @login_required
 def home(request):
-    return render(request, "home.html")
+    labels = {
+        Ticker.Types.ACAO: "Ações",
+        Ticker.Types.FII: "FIIs",
+        Ticker.Types.BDR: "BDRs",
+        Ticker.Types.ETF: "ETFs",
+    }
+    queryset = Transaction.objects.filter(wallet__user_id=1)
+    total_invested = queryset.aggregate(total=Sum("total_price"))["total"]
+    totals_by_type = queryset.values("ticker__type").annotate(
+        total=Sum("total_price")
+    )
+    data = {
+        labels[item["ticker__type"]]: item["total"] for item in totals_by_type
+    }
+    context = {"totals": data, "total_invested": total_invested}
+    return render(request, "home.html", context)
 
 
 @login_required

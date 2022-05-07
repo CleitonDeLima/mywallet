@@ -1,14 +1,30 @@
 {% extends 'base.html' %}
-{% load core_tags %}
+{% load static core_tags %}
 
-{% block head_title %}Home{% endblock %}
+{% block head_title %}Dashboard{% endblock %}
 
-{% block title %}Home{% endblock %}
-
-{% block breadcrumb %}
-  {% breadcrumb_url "Home" %}
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-  ...
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Composição da Carteira</h5>
+      <p>Valor total de <strong>{{ total_invested|show_money }}</strong></p>
+      <div class="progress" style="height: 25px;">
+        {% for type, total in totals.items %}
+          {% widthratio total total_invested 100 as width %}
+
+          <div class="progress-bar {% cycle 'bg-success' 'bg-danger' 'bg-info' 'bg-warning' %}"
+                role="progressbar"
+                style="width: {{ width }}%; heigth: 30px"
+                aria-valuenow="{{ width }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                title="{{ type }} - {{ total|show_money }}">
+            {{ type }} - {{ width }}%
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 {% endblock %}

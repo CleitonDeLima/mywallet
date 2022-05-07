@@ -3,5 +3,5 @@
 Ativo: {{ item.ticker__name|upper }}
 Quantidade: {{ item.quantity }} Unidade{{ item.quantity|pluralize  }}
 Nome: {{ item.ticker__company_name|upper }}
-Preço Médio: {{ item.avg_price|floatformat:2|show_money }}
+Preço Médio: {{ item.avg_price|show_money }}
 CNPJ: {{ item.ticker__document }}
