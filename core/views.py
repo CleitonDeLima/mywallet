@@ -18,7 +18,7 @@ def home(request):
         Ticker.Types.BDR: "BDRs",
         Ticker.Types.ETF: "ETFs",
     }
-    queryset = Transaction.objects.filter(wallet__user_id=1)
+    queryset = Transaction.objects.filter(wallet__user=request.user)
     total_invested = queryset.aggregate(total=Sum("total_price"))["total"]
     totals_by_type = queryset.values("ticker__type").annotate(
         total=Sum("total_price")
