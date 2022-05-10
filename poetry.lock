@@ -273,7 +273,7 @@ Django = ">=2.2"
 
 [[package]]
 name = "django-htmx"
-version = "1.9.0"
+version = "1.10.0"
 description = "Extensions for using Django with htmx."
 category = "main"
 optional = false
@@ -955,7 +955,7 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "3.10.3"
-content-hash = "7bc47a60778076a6d90997821be04da4fc66b1e24672fed42a36c3dcd1297d1f"
+content-hash = "a06853fe7f032321cd7f3ba7cca1988fe4f1d05e6f637a08a264ecd8cfa0964f"
 
 [metadata.files]
 appdirs = [
@@ -1141,8 +1141,8 @@ django-extensions = [
     {file = "django_extensions-3.1.5-py3-none-any.whl", hash = "sha256:9238b9e016bb0009d621e05cf56ea8ce5cce9b32e91ad2026996a7377ca28069"},
 ]
 django-htmx = [
-    {file = "django-htmx-1.9.0.tar.gz", hash = "sha256:7c5c6e7a98ae4498b39e3603362b979c9f017d42d027be3fd359d963a16ef2be"},
-    {file = "django_htmx-1.9.0-py3-none-any.whl", hash = "sha256:ee1065412f579ad5ff6ba0e1d1a564ac41ea32e9b6221a18ebde1922f2a3b6ef"},
+    {file = "django-htmx-1.10.0.tar.gz", hash = "sha256:f60d6d90077c9fd33c31b329f403c0b260c7c99fef22ddaa6b4beea6af6534ec"},
+    {file = "django_htmx-1.10.0-py3-none-any.whl", hash = "sha256:363da9fa9edbb1b79e04368e68de0d0d6b6e8591cbe4d7621e4af1ba12b4c007"},
 ]
 executing = [
     {file = "executing-0.8.3-py2.py3-none-any.whl", hash = "sha256:d1eef132db1b83649a3905ca6dd8897f71ac6f8cac79a7e58a1a09cf137546c9"},
