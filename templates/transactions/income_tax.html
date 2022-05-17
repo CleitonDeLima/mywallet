@@ -49,6 +49,7 @@
                           <p class="mb-0">Quantidade: <strong>{{ item.quantity }} Unidade{{ item.quantity|pluralize }}</strong></p>
                           <p class="mb-0">Nome: <strong>{{ item.ticker__company_name|upper }}</strong></p>
                           <p class="mb-0">Preço Médio: <strong>{{ item.avg_price|show_money }}</strong></p>
+                          <p class="mb-0">Valor Total: <strong>{{ item.total_price|show_money }}</strong></p>
                           <p>CNPJ: <strong>{{ item.ticker__document }}</strong></p>
                         </div>
                       </div>
