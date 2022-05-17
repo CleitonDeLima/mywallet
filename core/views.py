@@ -149,7 +149,9 @@ def income_tax(request):
         .annotate(
             quantity=buy - sell,
             avg_price=Avg("price", filter=Q(order=Transaction.OrderTypes.BUY)),
-            total_price=F("avg_price") * F("quantity"),
+            total_price=ExpressionWrapper(
+                F("avg_price") * F("quantity"), output_field=DecimalField()
+            ),
             type=F("ticker__type"),
         )
         .filter(
