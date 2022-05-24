@@ -3,6 +3,7 @@ from io import StringIO
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Avg, DecimalField, ExpressionWrapper, F, Q, Sum
+from django.db.models.functions import Round
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.forms import TransactionForm, TransactionImportForm
@@ -150,7 +151,9 @@ def income_tax(request):
             quantity=buy - sell,
             avg_price=Avg("price", filter=Q(order=Transaction.OrderTypes.BUY)),
             total_price=ExpressionWrapper(
-                F("avg_price") * F("quantity"), output_field=DecimalField()
+                Round("avg_price", precision=2)
+                * Round("quantity", precision=2),
+                output_field=DecimalField(),
             ),
             type=F("ticker__type"),
         )
